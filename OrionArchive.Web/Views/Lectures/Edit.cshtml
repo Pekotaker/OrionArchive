@@ -1,0 +1,40 @@
+@model OrionArchive.Web.ViewModels.LectureFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Lecture";
+}
+
+<h1>Edit Lecture</h1>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="CourseId" />
+    <input type="hidden" asp-for="ExistingBannerPath" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label"></label>
+        <textarea asp-for="Content" class="form-control" rows="12"></textarea>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ExistingBannerPath))
+    {
+        <div class="mb-3">
+            <p>Current banner:</p>
+            <img src="@Model.ExistingBannerPath" style="max-width: 300px;" />
+        </div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="BannerFile" class="form-label">New Banner</label>
+        <input asp-for="BannerFile" type="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+</form>

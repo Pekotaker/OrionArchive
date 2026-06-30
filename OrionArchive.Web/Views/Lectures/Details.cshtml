@@ -1,0 +1,24 @@
+@model OrionArchive.Web.Models.Lecture
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.BannerPath))
+{
+    <div class="mb-3">
+        <img src="@Model.BannerPath" style="max-width: 600px;" />
+    </div>
+}
+
+<div class="mb-4">
+    @Model.Content
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">Back to Course</a>
+</p>

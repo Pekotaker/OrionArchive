@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using OrionArchive.Web.Data;
+using OrionArchive.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -24,6 +26,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();

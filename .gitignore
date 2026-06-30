@@ -3,6 +3,10 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# User-uploaded runtime files
+OrionArchive.Web/wwwroot/uploads/*
+!OrionArchive.Web/wwwroot/uploads/.gitkeep
+
 # dotenv files
 .env
 

@@ -3,18 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using OrionArchive.Web.Data;
 using OrionArchive.Web.Models;
 using OrionArchive.Web.ViewModels;
+using OrionArchive.Web.Services;
 
 namespace OrionArchive.Web.Controllers;
 
 public class LecturesController : Controller
 {
     private readonly AppDbContext _context;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IFileUploadService _fileUploadService;
 
-    public LecturesController(AppDbContext context, IWebHostEnvironment environment)
+    public LecturesController(AppDbContext context, IFileUploadService fileUploadService)
     {
         _context = context;
-        _environment = environment;
+        _fileUploadService = fileUploadService;
     }
 
     public async Task<IActionResult> Details(int id)
@@ -68,12 +69,22 @@ public class LecturesController : Controller
             .Where(l => l.CourseId == viewModel.CourseId)
             .MaxAsync(l => (int?)l.OrderIndex) ?? 0;
 
+        var bannerPath = await _fileUploadService.SaveImageAsync(
+            viewModel.BannerFile,
+            ModelState,
+            nameof(viewModel.BannerFile));
+
+        if (!ModelState.IsValid)
+        {
+            return View(viewModel);
+        }
+
         var lecture = new Lecture
         {
             CourseId = viewModel.CourseId,
-            Title = viewModel.Title,
+            Title = viewModel.Title,    
             Content = viewModel.Content,
-            BannerPath = await SaveBannerAsync(viewModel.BannerFile),
+            BannerPath = bannerPath,
             OrderIndex = maxOrder + 1
         };
 
@@ -130,7 +141,15 @@ public class LecturesController : Controller
         lecture.Title = viewModel.Title;
         lecture.Content = viewModel.Content;
 
-        var newBannerPath = await SaveBannerAsync(viewModel.BannerFile);
+        var newBannerPath = await _fileUploadService.SaveImageAsync(
+            viewModel.BannerFile,
+            ModelState,
+            nameof(viewModel.BannerFile));
+
+        if (!ModelState.IsValid)
+        {
+            return View(viewModel);
+        }
 
         if (newBannerPath != null)
         {
@@ -174,29 +193,5 @@ public class LecturesController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Details", "Courses", new { id = courseId });
-    }
-
-    private async Task<string?> SaveBannerAsync(IFormFile? file)
-    {
-        if (file == null || file.Length == 0)
-        {
-            return null;
-        }
-
-        var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-
-        if (!Directory.Exists(uploadsFolder))
-        {
-            Directory.CreateDirectory(uploadsFolder);
-        }
-
-        var extension = Path.GetExtension(file.FileName);
-        var fileName = $"{Guid.NewGuid()}{extension}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        await using var stream = new FileStream(filePath, FileMode.Create);
-        await file.CopyToAsync(stream);
-
-        return $"/uploads/{fileName}";
     }
 }

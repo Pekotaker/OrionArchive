@@ -1,0 +1,42 @@
+@model IEnumerable<OrionArchive.Web.Models.Course>
+
+@{
+    ViewData["Title"] = "OrionArchive";
+}
+
+<h1>OrionArchive</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create Course</a>
+</p>
+
+<div class="row">
+@foreach (var course in Model)
+{
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            @if (!string.IsNullOrWhiteSpace(course.BannerPath))
+            {
+                <img src="@course.BannerPath" class="card-img-top" alt="@course.Title" />
+            }
+
+            <div class="card-body">
+                <h5 class="card-title">@course.Title</h5>
+                <p class="card-text">@course.Description</p>
+
+                <div>
+                    @foreach (var category in course.CourseCategories.Select(cc => cc.Category))
+                    {
+                        <span class="badge bg-secondary">@category.Name</span>
+                    }
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary">Open</a>
+                <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+            </div>
+        </div>
+    </div>
+}
+</div>

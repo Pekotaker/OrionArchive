@@ -1,0 +1,14 @@
+@model OrionArchive.Web.Models.Course
+
+@{
+    ViewData["Title"] = "Delete Course";
+}
+
+<h1>Delete Course</h1>
+
+<p>Are you sure you want to delete <strong>@Model.Title</strong>?</p>
+
+<form asp-action="Delete" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

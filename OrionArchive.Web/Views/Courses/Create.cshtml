@@ -1,0 +1,33 @@
+@model OrionArchive.Web.ViewModels.CourseFormViewModel
+
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<h1>Create Course</h1>
+
+<form asp-action="Create" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="BannerFile" class="form-label">Banner</label>
+        <input asp-for="BannerFile" type="file" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryNames" class="form-label"></label>
+        <input asp-for="CategoryNames" class="form-control" placeholder="Physics, Astronomy, Magic Theory" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

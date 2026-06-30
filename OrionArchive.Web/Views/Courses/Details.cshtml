@@ -1,0 +1,56 @@
+@model OrionArchive.Web.Models.Course
+@using OrionArchive.Web.Models
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.BannerPath))
+{
+    <img src="@Model.BannerPath" style="max-width: 600px;" class="mb-3" />
+}
+
+<p>@Model.Description</p>
+
+<div class="mb-3">
+    @foreach (var category in Model.CourseCategories.Select(cc => cc.Category))
+    {
+        <span class="badge bg-secondary">@category.Name</span>
+    }
+</div>
+
+<p>
+    <a asp-controller="Lectures" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-primary">Add Lecture</a>
+    <a asp-controller="Quizzes" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-warning">Add Quiz</a>
+</p>
+
+<h2>Lessons</h2>
+
+@if (!Model.Lessons.Any())
+{
+    <p>No lessons yet.</p>
+}
+else
+{
+    <ol>
+        @foreach (var lesson in Model.Lessons.OrderBy(l => l.OrderIndex))
+        {
+            <li>
+                @if (lesson is Quiz)
+                {
+                    <strong>[Quiz]</strong>
+                    <a asp-controller="Quizzes" asp-action="Details" asp-route-id="@lesson.Id">@lesson.Title</a>
+                }
+                else
+                {
+                    <strong>[Lecture]</strong>
+                    <a asp-controller="Lectures" asp-action="Details" asp-route-id="@lesson.Id">@lesson.Title</a>
+                }
+            </li>
+        }
+    </ol>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

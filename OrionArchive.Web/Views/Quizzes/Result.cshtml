@@ -1,0 +1,52 @@
+@model OrionArchive.Web.ViewModels.QuizResultViewModel
+
+@{
+    ViewData["Title"] = "Quiz Result";
+}
+
+<h1>Quiz Result</h1>
+
+<h2>@Model.QuizTitle</h2>
+
+@if (Model.IsCorrect)
+{
+    <div class="alert alert-success">
+        Correct.
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        Incorrect.
+    </div>
+}
+
+<h3>Your answer</h3>
+
+@if (Model.SelectedAnswers.Any())
+{
+    <ul>
+        @foreach (var answer in Model.SelectedAnswers)
+        {
+            <li>@answer</li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted">You did not select any answer.</p>
+}
+
+<h3>Correct answer</h3>
+
+<ul>
+    @foreach (var answer in Model.CorrectAnswers)
+    {
+        <li>@answer</li>
+    }
+</ul>
+
+<p>
+    <a asp-action="Details" asp-route-id="@Model.QuizId" class="btn btn-primary">Try Again</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">Back to Course</a>
+</p>

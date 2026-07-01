@@ -1,0 +1,57 @@
+@model OrionArchive.Web.Models.Quiz
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+@if (Model.Course != null)
+{
+    <p class="text-muted">Course: @Model.Course.Title</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.BannerPath))
+{
+    <div class="mb-3">
+        <img src="@Model.BannerPath" style="max-width: 600px;" />
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Content))
+{
+    <div class="mb-4">
+        @Model.Content
+    </div>
+}
+
+<form asp-action="Submit" method="post">
+    <input type="hidden" name="quizId" value="@Model.Id" />
+
+    <h2>Answers</h2>
+
+    @foreach (var answer in Model.Answers.OrderBy(a => a.Id))
+    {
+        <div class="form-check mb-2">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="selectedAnswerIds"
+                   value="@answer.Id"
+                   id="answer-@answer.Id" />
+
+            <label class="form-check-label" for="answer-@answer.Id">
+                @answer.Content
+            </label>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary mt-3">Submit Answer</button>
+</form>
+
+<hr />
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">Back to Course</a>
+</p>
